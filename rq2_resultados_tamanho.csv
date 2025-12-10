@@ -1,0 +1,4 @@
+query,rest_mean,graphql_mean,diff_bytes,diff_percent,p_value,cohens_d,effect_size,significativo
+simple,1229.0,123.0,-1106.0,-89.99186330349877,4.320463057827488e-08,-inf,Grande,SIGNIFICATIVO
+complex,68702.0,794.0,-67908.0,-98.84428400919914,4.320463057827488e-08,-inf,Grande,SIGNIFICATIVO
+medium,19939.0,724.0,-19215.0,-96.36892522192689,4.320463057827488e-08,-inf,Grande,SIGNIFICATIVO
