@@ -1,6 +1,6 @@
-,,response_time_ms,response_time_ms,response_time_ms,response_time_ms,response_time_ms,payload_size_bytes,payload_size_bytes,payload_size_bytes,payload_size_bytes,payload_size_bytes
+api_type,query_type,response_time_ms,response_time_ms,response_time_ms,response_time_ms,response_time_ms,payload_size_bytes,payload_size_bytes,payload_size_bytes,payload_size_bytes,payload_size_bytes
 ,,mean,std,median,min,max,mean,std,median,min,max
-api_type,query_type,,,,,,,,,,
+
 GraphQL,complex,523.86,97.87,505.01,413.55,820.65,794.0,0.0,794.0,794,794
 GraphQL,medium,467.61,114.98,424.62,350.99,824.15,724.0,0.0,724.0,724,724
 GraphQL,simple,398.79,117.07,369.46,303.68,822.97,123.0,0.0,123.0,123,123
