@@ -210,11 +210,11 @@ a valores extremos.
 
 **Interpretação:**
 
-- **Query Simples:** [Descreva se há diferença significativa, direção e magnitude]
-- **Query Média:** [Descreva se há diferença significativa, direção e magnitude]
-- **Query Complexa:** [Descreva se há diferença significativa, direção e magnitude]
+- **Query Simples:** Em queries simples, observamos um tempo de resposta muito maior por parte da API GraphQL, tendo uma mediana que quase alcança os 400ms, isso se deve ao processamento maior que a API realiza, processamento etse que é menor na API REST, devido ao carater simples da query.
+- **Query Média:** Já no cenário de queries de complexidade média, observamos um temp de resposta ligeiramente maior em APIs REST, tempo etse, que é reduzido em APIs GraphQL.
+- **Query Complexa:** Em casos de queries complexas, a diferença é ainda maior, observamos um tempo de resposta que possui sua mediana em torno de 1500ms para APIs REST.
 
-**Resposta à RQ1:** [Com base nos p-values, responda se GraphQL é mais rápido ou não]
+**Resposta à RQ1:** raphQL é considerada uma arquitetura mais rápida, mas isso depende da complexidade da sua query, sendo vantajosa a utilização a partir de certo nivel de complexidade.
 
 ### 3.4 RQ2: Tamanho do Payload
 
@@ -233,11 +233,11 @@ a valores extremos.
 **Interpretação:**
 
 
-- **Query Simples:** [Descreva se há diferença significativa, direção e magnitude]
-- **Query Média:** [Descreva se há diferença significativa, direção e magnitude]
-- **Query Complexa:** [Descreva se há diferença significativa, direção e magnitude]
+- **Query Simples:**Podemos observar uma diferença entre as duas arquiteturas, onde REST, possuindo um payload um pouco maior comparada a APIs GraphQL.
+- **Query Média:** O payload em requisições para APIs REST tende a aumentar a diferença em queries médias, nesse caso, já chegando em torno de 19KB
+- **Query Complexa:** Em casos de queries complexas, a diferença aumenta bruscamente, onde APIs REST possuem um nivel bem mais elevado no tamanho do payload.
 
-**Resposta à RQ2:** [Com base nos p-values, responda se GraphQL retorna menos dados]
+**Resposta à RQ2:** Podemos observar que a medida que a complexidade da query aumenta, assim aumenta o tamanho do payload para requisições a APIs REST, enquanto o tamanho de payload de requisições a APIs GraphQL, depois de certo ponto, permanece estavel. Isso indica uma desvantagem no uso de GraphQL em situações onde o tamanho do payload importa, como conexões moveis, IoT, e custos de infraestrutura.
 
 ### 3.5 Visualizações Adicionais
 
@@ -247,50 +247,45 @@ a valores extremos.
 
 ---
 
-## 4. Conclusao
+## 4. Conclusão
 
 ### 4.1 Principais Achados
 
-[Resuma os principais resultados]
+Os experimentos realizados comparando as arquiteturas REST e GraphQL utilizando a API do GitHub revelaram trade-offs claros de desempenho e eficiência:
 
-Exemplo:
-- GraphQL foi significativamente [mais rápido/mais lento] em X de 3 tipos de query
-- O tamanho do payload do GraphQL foi [menor/maior] em Y% em média
-- O efeito foi [pequeno/médio/grande] segundo Cohen's d
+1.  **Tempo de Resposta (Latência):** A arquitetura REST demonstrou ser superior em consultas **Simples**, sendo cerca de 15% a 18% mais rápida que o GraphQL. No entanto, houve uma inversão de desempenho à medida que a complexidade aumentou. Nas consultas **Complexas**, o GraphQL foi drasticamente mais rápido, reduzindo o tempo de resposta em aproximadamente 65% (uma diferença de quase 1 segundo em média).
+2.  **Tamanho do Payload (Eficiência de Dados):** O GraphQL apresentou uma superioridade esmagadora em todos os cenários. A redução no tamanho dos dados trafegados variou de 90% (queries simples) até 98,8% (queries complexas). Na query mais pesada, o REST trafegou ~68KB enquanto o GraphQL trafegou apenas ~0.8KB para obter a mesma informação relevante.
 
 ### 4.2 Explicação dos Resultados
 
-**Por que GraphQL pode ser mais rápido/lento:**
-- [Explique baseado nas características de cada API]
+A variação de desempenho observada pode ser atribuída às características fundamentais de cada tecnologia:
 
-**Por que GraphQL pode ter payloads menores/maiores:**
-- [Explique baseado na flexibilidade de queries]
+* **Por que o REST foi mais rápido em queries Simples:** Em requisições triviais, o overhead de processamento do servidor GraphQL (que precisa fazer o *parsing* e validação da query string e resolver os *resolvers* dinamicamente) supera o ganho de eficiência de dados. O REST, sendo mais estático e direto, responde mais rápido quando o volume de dados é pequeno.
+* **Por que o GraphQL venceu nas queries Complexas:** A vantagem do GraphQL decorre da eliminação do *Over-fetching*. Na query complexa, a API REST enviou 68.702 bytes de dados. Transferir, serializar e desserializar esse volume de dados custa tempo de CPU e rede. O GraphQL, ao buscar apenas os campos solicitados (794 bytes), eliminou o gargalo de transmissão de dados inúteis, resultando em um tempo total menor.
 
 ### 4.4 Implicações Práticas
 
-[O que esses resultados significam para desenvolvedores?]
+Para engenheiros de software e arquitetos de sistemas, estes resultados sugerem diretrizes claras para a tomada de decisão:
 
-Exemplo:
-- Para queries simples, REST pode ser suficiente
-- Para queries complexas, GraphQL oferece vantagens em X
-- A escolha deve considerar Y e Z
+1.  **Cenários Mobile-First e IoT:** O uso de GraphQL é altamente recomendado devido à redução massiva de payload (98% em cenários complexos). Isso impacta diretamente na economia de bateria, planos de dados do usuário e estabilidade em redes 3G/4G instáveis.
+2.  **Redução de Custos de Infraestrutura:** Para sistemas com alto volume de tráfego, a adoção do GraphQL pode reduzir significativamente os custos de *Data Transfer Out* (Egress) em provedores de nuvem, dado que o tráfego de dados é ordens de magnitude menor.
+3.  **Simplicidade vs. Flexibilidade:** Se o sistema consiste apenas em operações CRUD simples e o cliente sempre precisa do objeto completo, o REST permanece uma opção válida e performática. Porém, para *dashboards* complexos ou aplicações com múltiplas visões de dados, o GraphQL oferece melhor desempenho percebido.
 
 ### 4.5 Limitações
 
-1. **Específico da GitHub API:** Resultados podem não generalizar
-2. **Queries escolhidas:** Podem não representar todos os casos de uso
-3. **Ambiente de rede:** Variações não totalmente controladas
-4. **Query complexa REST:** Usa múltiplas requisições, o que pode ser injusto
+A validade deste estudo deve ser considerada dentro das seguintes limitações:
+
+1.  **Específico da GitHub API:** Os resultados refletem a implementação específica da API v3 (REST) e v4 (GraphQL) do GitHub. Outras implementações de backend podem apresentar resultados diferentes.
+2.  **Variabilidade de Rede:** Embora tenhamos utilizado medidas estatísticas (mediana, desvio padrão), testes realizados através da internet pública estão sujeitos a flutuações de rota e latência que fogem ao controle do experimento.
+3.  **Complexidade da Query:** A definição do que constitui uma query "Simples", "Média" ou "Complexa" é subjetiva e foi arbitrada para este estudo.
 
 ### 4.6 Trabalhos Futuros
 
-- Testar com outras APIs (Shopify, Yelp)
-- Incluir mais níveis de complexidade
-- Medir consumo de CPU/memória
-- Analisar impacto de cache
+Para expandir a compreensão sobre o tema, sugere-se:
 
----
-
+* Replicar o experimento em ambientes controlados (rede local) para isolar o tempo de processamento do servidor (CPU) do tempo de latência de rede.
+* Analisar o consumo de recursos do lado do cliente (uso de bateria e CPU em dispositivos móveis) ao processar os payloads JSON de tamanhos diferentes.
+* Estender a comparação para incluir cenários de *mutations* (escrita de dados) e não apenas leitura.
 ## 5. REFERÊNCIAS
 
 - GitHub REST API Documentation. https://docs.github.com/rest
